@@ -1,0 +1,47 @@
+# --- BepInEx mod development gitignore ---
+
+# Build artifacts
+/bin/
+/obj/
+/out/
+/dist/
+/publish/
+/*.exe
+/*.dll
+/*.pdb
+
+# IDE-specific
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Unity / Rider / VS cache
+*.csproj
+*.sln
+*.pidb
+*.booproj
+*.svd
+*.userprefs
+
+# Logs
+*.log
+
+# BepInEx config (if generated on client side)
+BepInEx/config/*.cfg
+
+# NuGet / packages
+packages/
+*.nupkg
+*.snupkg
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS-specific
+.DS_Store
+Thumbs.db
+desktop.ini
