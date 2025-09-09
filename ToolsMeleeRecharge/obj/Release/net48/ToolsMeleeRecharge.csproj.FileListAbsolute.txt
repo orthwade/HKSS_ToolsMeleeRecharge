@@ -1,0 +1,16 @@
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\obj\Release\net48\ToolsMeleeRecharge.csproj.AssemblyReference.cache
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\obj\Release\net48\ToolsMeleeRecharge.GeneratedMSBuildEditorConfig.editorconfig
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\obj\Release\net48\ToolsMeleeRecharge.AssemblyInfoInputs.cache
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\obj\Release\net48\ToolsMeleeRecharge.AssemblyInfo.cs
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\obj\Release\net48\ToolsMeleeRecharge.csproj.CoreCompileInputs.cache
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\obj\Release\net48\ToolsMeleeRecharge.sourcelink.json
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\bin\Release\net48\ToolsMeleeRecharge.dll
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\bin\Release\net48\ToolsMeleeRecharge.pdb
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\bin\Release\net48\0Harmony.dll
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\bin\Release\net48\Assembly-CSharp.dll
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\bin\Release\net48\BepInEx.dll
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\bin\Release\net48\UnityEngine.CoreModule.dll
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\bin\Release\net48\UnityEngine.dll
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\obj\Release\net48\ToolsMel.1D352A08.Up2Date
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\obj\Release\net48\ToolsMeleeRecharge.dll
+C:\repo\HKSS_ToolsMeleeRecharge\ToolsMeleeRecharge\obj\Release\net48\ToolsMeleeRecharge.pdb

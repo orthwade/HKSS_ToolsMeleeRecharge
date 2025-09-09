@@ -55,4 +55,5 @@ desktop.ini
 !*.sln
 
 # Optional: ignore game/BepInEx DLLs (developers copy locally)
-libs/*.dll
+*.dll
+**/*.dll
