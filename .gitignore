@@ -1,13 +1,13 @@
 # --- Silksong / BepInEx Mod Development Gitignore ---
 
 # Build outputs
-/bin/
-/obj/
-/out/
-/dist/
-/publish/
-/*.exe
-/*.pdb
+bin/
+obj/
+out/
+dist/
+publish/
+*.exe
+*.pdb
 # Note: compiled mod DLLs go in bin/Release or BepInEx/plugins, which are ignored
 
 # IDE-specific
