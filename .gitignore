@@ -1,16 +1,16 @@
-# --- BepInEx mod development gitignore ---
+# --- Silksong / BepInEx Mod Development Gitignore ---
 
-# Build artifacts
+# Build outputs
 /bin/
 /obj/
 /out/
 /dist/
 /publish/
 /*.exe
-/*.dll
 /*.pdb
+# Note: compiled mod DLLs go in bin/Release or BepInEx/plugins, which are ignored
 
-# IDE-specific (Visual Studio, JetBrains Rider)
+# IDE-specific
 .vscode/
 .idea/
 *.suo
@@ -18,16 +18,13 @@
 *.userosscache
 *.sln.docstates
 
-# VS Code specific
-.vscode/*
+# VS Code: allow shared settings
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# Unity / Rider / VS cache
-*.csproj
-*.sln
+# Unity / Rider cache and temp files
 *.pidb
 *.booproj
 *.svd
@@ -36,7 +33,7 @@
 # Logs
 *.log
 
-# BepInEx config (if generated on client side)
+# BepInEx config files (user-generated)
 BepInEx/config/*.cfg
 
 # NuGet / packages
@@ -52,3 +49,10 @@ packages/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Keep project and solution files so repo is buildable
+!*.csproj
+!*.sln
+
+# Optional: ignore game/BepInEx DLLs (developers copy locally)
+libs/*.dll
