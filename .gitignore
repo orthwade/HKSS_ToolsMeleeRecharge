@@ -10,13 +10,20 @@
 /*.dll
 /*.pdb
 
-# IDE-specific
+# IDE-specific (Visual Studio, JetBrains Rider)
 .vscode/
 .idea/
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
+
+# VS Code specific
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
 # Unity / Rider / VS cache
 *.csproj
