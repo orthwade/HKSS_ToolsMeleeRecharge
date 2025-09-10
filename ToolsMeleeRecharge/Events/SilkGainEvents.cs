@@ -48,8 +48,10 @@ namespace ToolsMeleeRecharge.Events
                         toolData.AmountLeft++;
                         PlayerData.instance.SetToolData(item.name, toolData);
                         Log.LogInfo($"Recharged 1 charge for {toolRecharge.GetDisplayName()}. New charges: {currentCharges + 1}");
+                        ToolItemManager.ReportAllBoundAttackToolsUpdated();
                     }
                     toolRecharge.ResetStrikeCounter();
+                    
                 }
             }
         }
