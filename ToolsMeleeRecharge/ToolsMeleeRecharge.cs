@@ -17,8 +17,10 @@ namespace ToolsMeleeRecharge
         {
             PluginLog.Log = Logger;
 
+            ToolLibrary.Init(Config);
+
             // Initialize config manager
-            ConfigManager.Init(Config);
+            GlobalToolConfig.Init(Config);
 
             Logger.LogInfo("Tools Melee Recharge loaded!");
 

@@ -1,5 +1,5 @@
 using BepInEx.Configuration;
-public class Tool
+public class ToolRecharge
 {
     private readonly bool shouldIgnore = false;
     private readonly int index;
@@ -11,7 +11,7 @@ public class Tool
     private readonly ConfigEntry<int> strikesPerRecharge;
     private readonly ConfigEntry<float> damageMultiplier;
 
-    public Tool(int index, string internalName, string displayName, ConfigFile config)
+    public ToolRecharge(int index, string internalName, string displayName, ConfigFile config)
     {
         this.index = index;
         this.internalName = internalName;

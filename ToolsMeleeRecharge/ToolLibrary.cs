@@ -28,20 +28,20 @@ static public class ToolLibrary
         { "Plasmium Phial", "Lifeblood Syringe" },
         { "Voltvessels", "Lightning Rod" },
     };
-    private static Dictionary<string, Tool> ToolsByInternalName { get; set; }
-    private static Dictionary<string, Tool> ToolsByDisplayName { get; set; }
+    private static Dictionary<string, ToolRecharge> ToolsByInternalName { get; set; }
+    private static Dictionary<string, ToolRecharge> ToolsByDisplayName { get; set; }
 
-    private static Dictionary<int, Tool> ToolsByIndex { get; set; }
+    private static Dictionary<int, ToolRecharge> ToolsByIndex { get; set; }
 
     public static void Init(ConfigFile config)
     {
-        ToolsByInternalName = new Dictionary<string, Tool>();
-        ToolsByDisplayName = new Dictionary<string, Tool>();
-        ToolsByIndex = new Dictionary<int, Tool>();
+        ToolsByInternalName = new Dictionary<string, ToolRecharge>();
+        ToolsByDisplayName = new Dictionary<string, ToolRecharge>();
+        ToolsByIndex = new Dictionary<int, ToolRecharge>();
 
         // Add each tool: index, internalName, displayName, config, defaultCharges, defaultStrikes, defaultDamage
         int index = 1; // start numbering from 1
-        foreach (var kvp in ToolNameMaps.DisplayToInternal)
+        foreach (var kvp in DisplayToInternal)
         {
             AddTool(index, kvp.Value, kvp.Key, config);
             index++;
@@ -50,23 +50,23 @@ static public class ToolLibrary
 
     private static void AddTool(int index, string internalName, string displayName, ConfigFile config)
     {
-        var tool = new Tool(index, internalName, displayName, config);
+        var tool = new ToolRecharge(index, internalName, displayName, config);
         ToolsByInternalName[internalName] = tool;
         ToolsByDisplayName[displayName] = tool;
         ToolsByIndex[index] = tool;
     }
 
-    public static Tool GetByInternalName(string internalName)
+    public static ToolRecharge GetByInternalName(string internalName)
     {
         ToolsByInternalName.TryGetValue(internalName, out var tool);
         return tool;
     }
-    public static Tool GetByDisplayName(string internalName)
+    public static ToolRecharge GetByDisplayName(string internalName)
     {
         ToolsByDisplayName.TryGetValue(internalName, out var tool);
         return tool;
     }
-    public static Tool GetByIndex(int index)
+    public static ToolRecharge GetByIndex(int index)
     {
         ToolsByIndex.TryGetValue(index, out var tool);
         return tool;

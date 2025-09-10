@@ -37,4 +37,13 @@
     </Reference>
   </ItemGroup>
 
+  <Target Name="CopyToSteam" AfterTargets="Build">
+  <Copy 
+    SourceFiles="$(TargetDir)$(TargetName).dll" 
+    DestinationFolder="C:\app\Steam\steamapps\common\Hollow Knight Silksong\BepInEx\plugins" 
+    OverwriteReadOnlyFiles="true" />
+  </Target>
+
+  
+
 </Project>

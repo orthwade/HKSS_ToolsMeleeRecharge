@@ -9,13 +9,13 @@ namespace ToolsMeleeRecharge.Patches
         {
             if (tool.Type != ToolItemType.Red) return;
 
-            var toolData = ConfigManager.GetToolData(tool.name);
-            if (!toolData.HasValue) return;
+            var toolRecharge = ToolLibrary.GetByInternalName(tool.name);
+            if (toolRecharge == null) return;
 
-            var (_, _, _, maxCharges, _, _) = toolData.Value;
+            var maxCharges = toolRecharge.GetMaxCharges();
 
             if (maxCharges < 0)
-                maxCharges = ConfigManager.GetGlobalMaxCharges();
+                maxCharges = GlobalToolConfig.GetGlobalMaxCharges();
 
             if (__result > maxCharges)
                 __result = maxCharges; // Cap charges
