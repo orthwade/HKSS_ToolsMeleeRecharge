@@ -1,24 +1,61 @@
 ﻿using BepInEx;
+using BepInEx.Logging;
 using HarmonyLib;
+using Unity.IO.LowLevel.Unsafe;
+using UnityEngine;
 
-[BepInPlugin("com.yourname.limittools", "Limit Tools Charges", "1.0.0")]
-public class LimitToolsPlugin : BaseUnityPlugin
+namespace ToolsMeleeRecharge
 {
-    private void Awake()
+    internal static class PluginLog
     {
-        // Create and apply Harmony patches
-        var harmony = new Harmony("com.yourname.limittools");
-        harmony.PatchAll();
+        internal static ManualLogSource Log;
     }
-}
 
-// Patch ToolItemManager.GetToolStorageAmount to cap charges
-[HarmonyPatch(typeof(ToolItemManager), nameof(ToolItemManager.GetToolStorageAmount))]
-class LimitToolStorage
-{
-    static void Postfix(ToolItem tool, ref int __result)
+    [BepInPlugin("com.orthwade.toolsmeleerecharge", "Tools Melee Recharge", "1.0.0")]
+    public class ToolsMeleeRecharge : BaseUnityPlugin
     {
-        if (__result > 2)
-            __result = 2; // Limit max charges to 2
+        private void Awake()
+        {
+            PluginLog.Log = Logger;
+            // Initialize config
+            ConfigManager.Init(Config);
+
+            Logger.LogInfo("Tools Melee Recharge loaded!");
+
+            var harmony = new Harmony("com.yourname.limittools");
+            harmony.PatchAll();
+        }
+
+        // Patch ToolItemManager.GetToolStorageAmount to cap charges
+        [HarmonyPatch(typeof(ToolItemManager), nameof(ToolItemManager.GetToolStorageAmount))]
+        class LimitToolStorage
+        {
+            static void Postfix(ToolItem tool, ref int __result)
+            {
+                if (tool.Type == ToolItemType.Red)
+                {
+                    var tool_data = ConfigManager.GetToolData(tool.name);
+                    if (tool_data.HasValue)
+                    {
+                        var (_, _, _, maxCharges, _, _) = tool_data.Value;
+                        if (maxCharges < 0)
+                            maxCharges = ConfigManager.GetGlobalMaxCharges();
+                            
+                        if (__result > maxCharges)
+                            __result = maxCharges; // Limit max charges to tool-specific config
+                    }
+                }
+            }
+        }
+
+        private void Update()
+        {
+
+        }
+
+        private void TestLogConfig()
+        {
+           
+        }
     }
 }
