@@ -28,21 +28,34 @@ namespace ToolsMeleeRecharge.Events
             {
                 if (item.Type != ToolItemType.Red) continue; // Only consider attacking tools
                 PluginLog.Log.LogInfo($"Equipped Tool: {item.name}, Type={item.Type}");
-                // TODO: recharge logic here
+
                 var toolRecharge = ToolLibrary.GetByInternalName(item.name);
                 if (toolRecharge == null) continue;
 
+                ToolItemsData.Data toolData = PlayerData.instance.GetToolData(item.name);
+
+                int currentCharges = toolData.AmountLeft;
+
+                int maxCharges = toolRecharge.GetMaxCharges();
+                int strikesPerRecharge = toolRecharge.GetStrikesPerRecharge();
+
+                if (strikesPerRecharge < 0)
+                    strikesPerRecharge = GlobalToolConfig.GetGlobalStrikesPerRecharge();
+
+                if (maxCharges < 0)
+                    maxCharges = GlobalToolConfig.GetGlobalMaxCharges();
+
+                if (currentCharges >= maxCharges)
+                {
+                    toolRecharge.ResetStrikeCounter();
+                    continue; // Already at max charges 
+                }
+
                 toolRecharge.IncrementStrikeCounter();
-                if (toolRecharge.GetStrikeCounter() >= toolRecharge.GetStrikesPerRecharge())
+                
+                if (toolRecharge.GetStrikeCounter() >= strikesPerRecharge)
                 {
                     // Recharge one charge
-                    ToolItemsData.Data toolData = PlayerData.instance.GetToolData(item.name);
-
-                    int currentCharges = toolData.AmountLeft;
-                    int maxCharges = toolRecharge.GetMaxCharges();
-                    if (maxCharges < 0)
-                        maxCharges = GlobalToolConfig.GetGlobalMaxCharges();
-
                     if (currentCharges < maxCharges)
                     {
                         toolData.AmountLeft++;
@@ -51,7 +64,7 @@ namespace ToolsMeleeRecharge.Events
                         ToolItemManager.ReportAllBoundAttackToolsUpdated();
                     }
                     toolRecharge.ResetStrikeCounter();
-                    
+
                 }
             }
         }
