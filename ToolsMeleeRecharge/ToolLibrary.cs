@@ -1,0 +1,74 @@
+using System.Collections.Generic;
+using BepInEx.Configuration;
+
+static public class ToolLibrary
+{
+    private static readonly Dictionary<string, string> DisplayToInternal = new Dictionary<string, string>
+    {
+        { "Straight Pin", "Straight Pin" },
+        { "Threefold Pin", "Tri Pin" },
+        { "Sting Shard", "Sting Shard" },
+        { "Curveclaw", "Curve Claws" },
+        { "Longpin", "Harpoon" },
+        { "Tacks", "Tack" },
+        { "Curvesickle", "Curve Claws Upgraded" },
+        { "Throwing Ring", "Shakra Ring" },
+        { "Pimpillo", "Pimpilo" },
+        { "Silkshot (Twelfth Architect.)", "WebShot Architect" },
+        { "Silkshot (Forge Daughter)", "WebShot Forge" },
+        { "Conchcutter", "Conch Drill" },
+        { "Silkshot", "WebShot Weaver" },
+        { "Delvers Drill", "Screw Attack" },
+        { "Cogwork Wheel", "Cogwork Saw" },
+        { "Snare Setter", "Silk Snare" },
+        { "Flintslate", "Flintstone" },
+        { "Cogfly", "Cogwork Flier" },
+        // { "Needle Phial", "Extractor" },
+        { "Flea Brew", "Flea Brew" },
+        { "Plasmium Phial", "Lifeblood Syringe" },
+        { "Voltvessels", "Lightning Rod" },
+    };
+    private static Dictionary<string, Tool> ToolsByInternalName { get; set; }
+    private static Dictionary<string, Tool> ToolsByDisplayName { get; set; }
+
+    private static Dictionary<int, Tool> ToolsByIndex { get; set; }
+
+    public static void Init(ConfigFile config)
+    {
+        ToolsByInternalName = new Dictionary<string, Tool>();
+        ToolsByDisplayName = new Dictionary<string, Tool>();
+        ToolsByIndex = new Dictionary<int, Tool>();
+
+        // Add each tool: index, internalName, displayName, config, defaultCharges, defaultStrikes, defaultDamage
+        int index = 1; // start numbering from 1
+        foreach (var kvp in ToolNameMaps.DisplayToInternal)
+        {
+            AddTool(index, kvp.Value, kvp.Key, config);
+            index++;
+        }
+    }
+
+    private static void AddTool(int index, string internalName, string displayName, ConfigFile config)
+    {
+        var tool = new Tool(index, internalName, displayName, config);
+        ToolsByInternalName[internalName] = tool;
+        ToolsByDisplayName[displayName] = tool;
+        ToolsByIndex[index] = tool;
+    }
+
+    public static Tool GetByInternalName(string internalName)
+    {
+        ToolsByInternalName.TryGetValue(internalName, out var tool);
+        return tool;
+    }
+    public static Tool GetByDisplayName(string internalName)
+    {
+        ToolsByDisplayName.TryGetValue(internalName, out var tool);
+        return tool;
+    }
+    public static Tool GetByIndex(int index)
+    {
+        ToolsByIndex.TryGetValue(index, out var tool);
+        return tool;
+    }
+}

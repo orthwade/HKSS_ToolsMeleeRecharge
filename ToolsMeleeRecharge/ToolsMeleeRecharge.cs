@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace ToolsMeleeRecharge
@@ -17,45 +16,15 @@ namespace ToolsMeleeRecharge
         private void Awake()
         {
             PluginLog.Log = Logger;
-            // Initialize config
+
+            // Initialize config manager
             ConfigManager.Init(Config);
 
             Logger.LogInfo("Tools Melee Recharge loaded!");
 
-            var harmony = new Harmony("com.yourname.limittools");
+            // Apply Harmony patches
+            var harmony = new Harmony("com.orthwade.toolsmeleerecharge");
             harmony.PatchAll();
-        }
-
-        // Patch ToolItemManager.GetToolStorageAmount to cap charges
-        [HarmonyPatch(typeof(ToolItemManager), nameof(ToolItemManager.GetToolStorageAmount))]
-        class LimitToolStorage
-        {
-            static void Postfix(ToolItem tool, ref int __result)
-            {
-                if (tool.Type == ToolItemType.Red)
-                {
-                    var tool_data = ConfigManager.GetToolData(tool.name);
-                    if (tool_data.HasValue)
-                    {
-                        var (_, _, _, maxCharges, _, _) = tool_data.Value;
-                        if (maxCharges < 0)
-                            maxCharges = ConfigManager.GetGlobalMaxCharges();
-                            
-                        if (__result > maxCharges)
-                            __result = maxCharges; // Limit max charges to tool-specific config
-                    }
-                }
-            }
-        }
-
-        private void Update()
-        {
-
-        }
-
-        private void TestLogConfig()
-        {
-           
         }
     }
 }

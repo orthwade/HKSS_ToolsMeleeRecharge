@@ -1,9 +1,11 @@
 using BepInEx.Configuration;
 public class Tool
 {
+    private readonly bool shouldIgnore = false;
     private readonly int index;
     private readonly string internalName;
     private readonly string displayName;
+    private int strikeCounter = 0;
 
     private readonly ConfigEntry<int> maxCharges;
     private readonly ConfigEntry<int> strikesPerRecharge;
@@ -46,16 +48,15 @@ public class Tool
         );
     }
 
+    public int GetIndex() => index;
+    public bool ShouldIgnore() => shouldIgnore;
+    public string GetInternalName() => internalName;
+    public string GetDisplayName() => displayName;
+    public int GetMaxCharges() => maxCharges?.Value ?? -1;
+    public int GetStrikesPerRecharge() => strikesPerRecharge?.Value ?? -1;
+    public float GetDamageMultiplier() => damageMultiplier?.Value ?? -1f;
 
-    public (int, string, string, int, int, float) GetData()
-    {
-        return (
-            index,
-            internalName,
-            displayName,
-            maxCharges?.Value ?? -1,
-            strikesPerRecharge?.Value ?? -1,
-            damageMultiplier?.Value ?? -1f
-        );
-    }
+    public int GetStrikeCounter() => strikeCounter;
+    public void IncrementStrikeCounter() => strikeCounter++;
+    public void ResetStrikeCounter() => strikeCounter = 0;
 }
