@@ -47,7 +47,6 @@ namespace ToolsMeleeRecharge.Events
                     {
                         toolData.AmountLeft++;
                         PlayerData.instance.SetToolData(item.name, toolData);
-                        ToolItemManager.SetToolStorageAmount(item, currentCharges + 1);
                         Log.LogInfo($"Recharged 1 charge for {toolRecharge.GetDisplayName()}. New charges: {currentCharges + 1}");
                     }
                     toolRecharge.ResetStrikeCounter();
