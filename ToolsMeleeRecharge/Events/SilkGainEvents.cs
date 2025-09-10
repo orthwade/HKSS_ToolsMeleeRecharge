@@ -24,11 +24,34 @@ namespace ToolsMeleeRecharge.Events
             Log.LogInfo($"[AfterSilkGain] AttackType={hit.AttackType}, Damage={hit.DamageDealt}");
 
             var equippedTools = GetCurrentEquippedTools();
-            foreach (var tool in equippedTools)
+            foreach (var item in equippedTools)
             {
-                if (tool.Type != ToolItemType.Red) continue; // Only consider attacking tools
-                PluginLog.Log.LogInfo($"Equipped Tool: {tool.name}, Type={tool.Type}");
+                if (item.Type != ToolItemType.Red) continue; // Only consider attacking tools
+                PluginLog.Log.LogInfo($"Equipped Tool: {item.name}, Type={item.Type}");
                 // TODO: recharge logic here
+                var toolRecharge = ToolLibrary.GetByInternalName(item.name);
+                if (toolRecharge == null) continue;
+
+                toolRecharge.IncrementStrikeCounter();
+                if (toolRecharge.GetStrikeCounter() >= toolRecharge.GetStrikesPerRecharge())
+                {
+                    // Recharge one charge
+                    ToolItemsData.Data toolData = PlayerData.instance.GetToolData(item.name);
+
+                    int currentCharges = toolData.AmountLeft;
+                    int maxCharges = toolRecharge.GetMaxCharges();
+                    if (maxCharges < 0)
+                        maxCharges = GlobalToolConfig.GetGlobalMaxCharges();
+
+                    if (currentCharges < maxCharges)
+                    {
+                        toolData.AmountLeft++;
+                        PlayerData.instance.SetToolData(item.name, toolData);
+                        ToolItemManager.SetToolStorageAmount(item, currentCharges + 1);
+                        Log.LogInfo($"Recharged 1 charge for {toolRecharge.GetDisplayName()}. New charges: {currentCharges + 1}");
+                    }
+                    toolRecharge.ResetStrikeCounter();
+                }
             }
         }
     }
