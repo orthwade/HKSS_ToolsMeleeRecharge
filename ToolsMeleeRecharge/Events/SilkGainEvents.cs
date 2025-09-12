@@ -78,7 +78,7 @@ namespace ToolsMeleeRecharge.Events
                     ToolItemsData.Data toolData = PlayerData.instance.GetToolData(item.name);
 
                     int currentCharges = toolData.AmountLeft;
-                    int maxCharges = toolRecharge.ResolveStorage(ToolItemManager.GetToolStorageAmount(item));
+                    int maxCharges = toolRecharge.ResolveStorage(ToolItemManager.GetToolStorageAmount(item), false);
                     int chargePercentPerStrike = GlobalToolConfig.GetGlobalChargePercentPerStrike();
 
                     if (currentCharges >= maxCharges)

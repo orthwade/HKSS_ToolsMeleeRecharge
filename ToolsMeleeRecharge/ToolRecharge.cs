@@ -94,19 +94,48 @@ namespace ToolsMeleeRecharge
         /// <summary>
         /// Resolves storage size for this tool, based on mode.
         /// </summary>
-        public int ResolveStorage(int vanillaValue)
+        public int ResolveStorage(int vanillaValue, bool modifier)
         {
+            float __result = 1.0f;
+
             switch (storageMode.Value)
             {
-                case StorageMode.Vanilla:
-                    return vanillaValue;
                 case StorageMode.Global:
-                    return GlobalToolConfig.GetGlobalMaxCharges();
+                    __result = GlobalToolConfig.GetGlobalMaxCharges();
+                    break;
                 case StorageMode.Difference:
-                    return Math.Max(1, vanillaValue + chargesDifference.Value);
+                    __result = Math.Max(1, vanillaValue + chargesDifference.Value);
+                    break;
                 default:
-                    return vanillaValue;
+                    __result = vanillaValue;
+                    break;
             }
+
+            float k = 1.0f;
+
+            if (modifier)
+            {
+                k = GlobalToolConfig.GetStorageModifierPercent() / 100.0f;
+                __result = Math.Max(1, __result * k);
+            }
+
+            int upper = (int)Math.Ceiling(__result);
+
+            float diff = upper - __result;
+
+            // Define how close you want it to be (tolerance)
+            float tolerance = 0.1f; // example: within 0.1
+
+            if (diff < tolerance)
+            {
+                __result = upper;
+            }
+            else
+            {
+                __result = (int)Math.Floor(__result);
+            }
+
+            return (int)(__result);
         }
 
         /// <summary>

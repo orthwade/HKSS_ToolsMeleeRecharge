@@ -11,6 +11,8 @@ namespace ToolsMeleeRecharge
         private static ConfigEntry<int> GlobalChargePercentPerStrike;
         private static ConfigEntry<float> GlobalDamageMultiplier;
 
+        private static ConfigEntry<int> StorageModifierPercent;
+
         public static void Init(ConfigFile config)
         {
             GlobalMaxCharges = config.Bind(
@@ -33,6 +35,16 @@ namespace ToolsMeleeRecharge
                 )
             );
 
+            StorageModifierPercent = config.Bind(
+                "00 - Global",
+                "StorageModifierPercent",
+                100,
+                new ConfigDescription(
+                    "Modifies size of all storages in percent. 100% = no change, 200% = double size, 50% = half size",
+                    new AcceptableValueRange<int>(1, 20000)
+                )
+            );
+
             // GlobalDamageMultiplier = config.Bind(
             //     "00 - Global",
             //     "DamageMultiplier",
@@ -47,6 +59,9 @@ namespace ToolsMeleeRecharge
 
         public static int GetGlobalMaxCharges() => GlobalMaxCharges.Value;
         public static int GetGlobalChargePercentPerStrike() => GlobalChargePercentPerStrike.Value;
+
+        public static int GetStorageModifierPercent() => StorageModifierPercent.Value;
+
         // public static float GetGlobalDamageMultiplier() => GlobalDamageMultiplier.Value;
     }
 }

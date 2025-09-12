@@ -12,7 +12,7 @@ namespace ToolsMeleeRecharge.Patches
             var toolRecharge = ToolLibrary.GetByInternalName(tool.name);
             if (toolRecharge == null) return;
 
-            var maxCharges = toolRecharge.ResolveStorage(__result);
+            var maxCharges = toolRecharge.ResolveStorage(__result, true);
 
             __result = maxCharges;
         }
