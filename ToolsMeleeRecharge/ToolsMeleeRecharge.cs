@@ -9,12 +9,16 @@ namespace ToolsMeleeRecharge
     {
         internal static ManualLogSource Log;
     }
+    
 
     [BepInPlugin("com.orthwade.toolsmeleerecharge", "Tools Melee Recharge", "1.0.0")]
     public class ToolsMeleeRecharge : BaseUnityPlugin
     {
+        internal static ToolsMeleeRecharge Instance;
         private void Awake()
         {
+            Instance = this;
+
             PluginLog.Log = Logger;
 
             ToolLibrary.Init(Config);

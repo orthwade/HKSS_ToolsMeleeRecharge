@@ -1,7 +1,10 @@
 using BepInEx.Logging;
+using System.Collections;
 using System.Collections.Generic;
 using HarmonyLib;
-using System.Reflection;
+using System;
+using ToolsMeleeRecharge; // Ensure this imports your plugin class namespace
+using UnityEngine;
 
 namespace ToolsMeleeRecharge.Events
 {
@@ -9,60 +12,144 @@ namespace ToolsMeleeRecharge.Events
     {
         private static ManualLogSource Log => PluginLog.Log;
 
+        // Ensure we only schedule one deferred update per frame
+        private static bool updateScheduled = false;
+
         private static List<ToolItem> GetCurrentEquippedTools()
         {
-            // Get the tools equipped for the current crest
-            return ToolItemManager.GetEquippedToolsForCrest(PlayerData.instance.CurrentCrestID) 
-                ?? new List<ToolItem>();
+            if (PlayerData.instance == null)
+            {
+                Log.LogError("[GetCurrentEquippedTools] PlayerData.instance is null!");
+                return new List<ToolItem>();
+            }
+
+            var crestId = PlayerData.instance.CurrentCrestID ?? string.Empty;
+            var list = ToolItemManager.GetEquippedToolsForCrest(crestId) 
+                    ?? new List<ToolItem>();
+
+            // Remove any null entries up front
+            list.RemoveAll(item => item == null);
+            return list;
         }
 
-        /// <summary>
-        /// Custom logic executed right after SilkGain would normally be applied.
-        /// </summary>
         public static void AfterSilkGain(HitInstance hit)
         {
-            Log.LogInfo($"[AfterSilkGain] AttackType={hit.AttackType}, Damage={hit.DamageDealt}");
-
-            var equippedTools = GetCurrentEquippedTools();
-            foreach (var item in equippedTools)
+            try
             {
-                if (item.Type != ToolItemType.Red) continue; // Only consider attacking tools
-                PluginLog.Log.LogInfo($"Equipped Tool: {item.name}, Type={item.Type}");
+                Log.LogInfo($"[AfterSilkGain] AttackType={hit.AttackType}, Damage={hit.DamageDealt}");
 
-                var toolRecharge = ToolLibrary.GetByInternalName(item.name);
-                if (toolRecharge == null) continue;
-
-                ToolItemsData.Data toolData = PlayerData.instance.GetToolData(item.name);
-
-                int currentCharges = toolData.AmountLeft;
-
-                int maxCharges = toolRecharge.GetMaxCharges();
-                int strikesPerRecharge = toolRecharge.GetStrikesPerRecharge();
-
-                if (strikesPerRecharge < 0)
-                    strikesPerRecharge = GlobalToolConfig.GetGlobalStrikesPerRecharge();
-
-                if (maxCharges < 0)
-                    maxCharges = GlobalToolConfig.GetGlobalMaxCharges();
-
-                if (currentCharges >= maxCharges)
+                if (PlayerData.instance == null)
                 {
-                    toolRecharge.ResetStrikeCounter();
-                    continue; // Already at max charges 
+                    Log.LogError("[AfterSilkGain] PlayerData.instance is null. Aborting.");
+                    return;
                 }
 
-                toolRecharge.IncrementStrikeCounter();
-                
-                if (toolRecharge.GetStrikeCounter() >= strikesPerRecharge)
+                var equippedTools = GetCurrentEquippedTools();
+                if (equippedTools == null)
                 {
-                    toolData.AmountLeft++;
-                    PlayerData.instance.SetToolData(item.name, toolData);
-                    Log.LogInfo($"Recharged 1 charge for {toolRecharge.GetDisplayName()}. New charges: {currentCharges + 1}");
-                    ToolItemManager.ReportBoundAttackToolUpdated(AttackToolBinding.Up);
-                    ToolItemManager.ReportBoundAttackToolUpdated(AttackToolBinding.Down);
-
-                    toolRecharge.ResetStrikeCounter();
+                    Log.LogError("[AfterSilkGain] equippedTools == null (unexpected).");
+                    return;
                 }
+
+                foreach (var item in equippedTools)
+                {
+                    if (item == null)
+                    {
+                        Log.LogWarning("[AfterSilkGain] skipped null ToolItem in equippedTools.");
+                        continue;
+                    }
+
+                    if (item.Type != ToolItemType.Red) continue; // only attacking tools
+
+                    var toolRecharge = ToolLibrary.GetByInternalName(item.name);
+                    if (toolRecharge == null)
+                    {
+                        Log.LogWarning($"[AfterSilkGain] ToolLibrary.GetByInternalName returned null for '{item.name}'.");
+                        continue;
+                    }
+
+                    if (PlayerData.instance == null)
+                    {
+                        Log.LogError("[AfterSilkGain] PlayerData.instance became null mid-loop. Aborting.");
+                        return;
+                    }
+
+                    // get current saved data (this is typically a struct copy — we update & write back)
+                    ToolItemsData.Data toolData = PlayerData.instance.GetToolData(item.name);
+
+                    int currentCharges = toolData.AmountLeft;
+                    int maxCharges = toolRecharge.GetMaxCharges();
+                    int strikesPerRecharge = toolRecharge.GetStrikesPerRecharge();
+
+                    if (strikesPerRecharge < 0)
+                        strikesPerRecharge = GlobalToolConfig.GetGlobalStrikesPerRecharge();
+
+                    if (maxCharges < 0)
+                        maxCharges = GlobalToolConfig.GetGlobalMaxCharges();
+
+                    if (currentCharges >= maxCharges)
+                    {
+                        toolRecharge.ResetStrikeCounter();
+                        continue; // already full
+                    }
+
+                    toolRecharge.IncrementStrikeCounter();
+
+                    if (toolRecharge.GetStrikeCounter() >= strikesPerRecharge)
+                    {
+                        toolData.AmountLeft++;
+                        PlayerData.instance.SetToolData(item.name, toolData);
+                        Log.LogInfo($"[AfterSilkGain] Recharged 1 charge for {toolRecharge.GetDisplayName()}. New charges: {currentCharges + 1}");
+
+                        // schedule a single deferred update (do not call immediately)
+                        ScheduleDeferredToolUpdate();
+
+                        toolRecharge.ResetStrikeCounter();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.LogError($"[AfterSilkGain] Exception: {ex}");
+            }
+        }
+
+        private static void ScheduleDeferredToolUpdate()
+        {
+            if (updateScheduled) return;
+            updateScheduled = true;
+
+            // Use the plugin instance to start coroutine
+            try
+            {
+                ToolsMeleeRecharge.Instance.StartCoroutine(DeferredUpdate());
+            }
+            catch (Exception ex)
+            {
+                Log.LogError($"[ScheduleDeferredToolUpdate] Failed to start coroutine: {ex}");
+                updateScheduled = false;
+            }
+        }
+
+        // Wait for physics to finish then one frame so pogo logic should have run
+        private static IEnumerator DeferredUpdate()
+        {
+            // Wait until after the next physics step (damage occurs in fixed updates),
+            // then wait one frame to be extra safe.
+            yield return new WaitForFixedUpdate();
+            yield return null;
+
+            try
+            {
+                ToolItemManager.ReportAllBoundAttackToolsUpdated();
+            }
+            catch (Exception ex)
+            {
+                Log.LogError($"[DeferredUpdate] ReportAllBoundAttackToolsUpdated threw: {ex}");
+            }
+            finally
+            {
+                updateScheduled = false;
             }
         }
     }

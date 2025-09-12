@@ -47,6 +47,6 @@ namespace ToolsMeleeRecharge
 
         public static int GetGlobalMaxCharges() => GlobalMaxCharges.Value;
         public static int GetGlobalStrikesPerRecharge() => GlobalStrikesPerRecharge.Value;
-        public static float GetGlobalDamageMultiplier() => GlobalDamageMultiplier.Value;
+        // public static float GetGlobalDamageMultiplier() => GlobalDamageMultiplier.Value;
     }
 }
