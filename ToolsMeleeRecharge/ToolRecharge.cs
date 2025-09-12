@@ -37,15 +37,15 @@ public class ToolRecharge
             )
         );
 
-        damageMultiplier = config.Bind(
-            $"{index:D2} - {displayName}",
-            "DamageMultiplier",
-            -1f,
-            new ConfigDescription(
-                "Damage multiplier for this tool (-1 uses global)",
-                new AcceptableValueRange<float>(-1f, 100f)
-            )
-        );
+        // damageMultiplier = config.Bind(
+        //     $"{index:D2} - {displayName}",
+        //     "DamageMultiplier",
+        //     -1f,
+        //     new ConfigDescription(
+        //         "Damage multiplier for this tool (-1 uses global)",
+        //         new AcceptableValueRange<float>(-1f, 100f)
+        //     )
+        // );
     }
 
     public int GetIndex() => index;

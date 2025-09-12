@@ -61,9 +61,9 @@ static public class ToolLibrary
         ToolsByInternalName.TryGetValue(internalName, out var tool);
         return tool;
     }
-    public static ToolRecharge GetByDisplayName(string internalName)
+    public static ToolRecharge GetByDisplayName(string displayName)
     {
-        ToolsByDisplayName.TryGetValue(internalName, out var tool);
+        ToolsByDisplayName.TryGetValue(displayName, out var tool);
         return tool;
     }
     public static ToolRecharge GetByIndex(int index)

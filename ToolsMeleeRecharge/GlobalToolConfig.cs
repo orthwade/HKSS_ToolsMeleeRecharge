@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Management.Instrumentation;
 using BepInEx.Configuration;
 
 namespace ToolsMeleeRecharge
@@ -31,15 +33,15 @@ namespace ToolsMeleeRecharge
                 )
             );
 
-            GlobalDamageMultiplier = config.Bind(
-                "00 - Global",
-                "DamageMultiplier",
-                1f,
-                new ConfigDescription(
-                    "Global damage multiplier for all tools",
-                    new AcceptableValueRange<float>(0.1f, 100f)
-                )
-            );
+            // GlobalDamageMultiplier = config.Bind(
+            //     "00 - Global",
+            //     "DamageMultiplier",
+            //     1f,
+            //     new ConfigDescription(
+            //         "Global damage multiplier for all tools",
+            //         new AcceptableValueRange<float>(0.1f, 100f)
+            //     )
+            // );
 
         }
 

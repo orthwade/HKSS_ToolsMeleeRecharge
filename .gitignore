@@ -57,3 +57,5 @@ desktop.ini
 # Optional: ignore game/BepInEx DLLs (developers copy locally)
 *.dll
 **/*.dll
+
+/ToolsMeleeRecharge/libs/ConfigurationManager/

@@ -55,16 +55,13 @@ namespace ToolsMeleeRecharge.Events
                 
                 if (toolRecharge.GetStrikeCounter() >= strikesPerRecharge)
                 {
-                    // Recharge one charge
-                    if (currentCharges < maxCharges)
-                    {
-                        toolData.AmountLeft++;
-                        PlayerData.instance.SetToolData(item.name, toolData);
-                        Log.LogInfo($"Recharged 1 charge for {toolRecharge.GetDisplayName()}. New charges: {currentCharges + 1}");
-                        ToolItemManager.ReportAllBoundAttackToolsUpdated();
-                    }
-                    toolRecharge.ResetStrikeCounter();
+                    toolData.AmountLeft++;
+                    PlayerData.instance.SetToolData(item.name, toolData);
+                    Log.LogInfo($"Recharged 1 charge for {toolRecharge.GetDisplayName()}. New charges: {currentCharges + 1}");
+                    ToolItemManager.ReportBoundAttackToolUpdated(AttackToolBinding.Up);
+                    ToolItemManager.ReportBoundAttackToolUpdated(AttackToolBinding.Down);
 
+                    toolRecharge.ResetStrikeCounter();
                 }
             }
         }
