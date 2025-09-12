@@ -18,7 +18,7 @@ namespace ToolsMeleeRecharge
                 "MaxCharges",
                 1,
                 new ConfigDescription(
-                    "Global maximum charges for all tools",
+                    "Global maximum charges for all tools. Notice that specific tools use Difference, not absolute values.",
                     new AcceptableValueRange<int>(1, 999)
                 )
             );
@@ -26,10 +26,10 @@ namespace ToolsMeleeRecharge
             GlobalChargePercentPerStrike = config.Bind(
                 "00 - Global",
                 "ChargePercentPerStrike",
-                100,
+                5,
                 new ConfigDescription(
-                    "Global charge in percents replenished with one strike (100% == 1 charge)",
-                    new AcceptableValueRange<int>(1, 999)
+                    "Global charge in percents replenished with one strike (if storage is 10, 10% == 1 charge, 100% == 10 charges)",
+                    new AcceptableValueRange<int>(1, 20000)
                 )
             );
 

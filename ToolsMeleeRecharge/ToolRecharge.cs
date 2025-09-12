@@ -5,14 +5,14 @@ namespace ToolsMeleeRecharge
 {
     public class ToolRecharge
     {
-        public enum ChargeMode
+        public enum StorageMode
         {
             Vanilla,    // use vanilla game value
             Global,     // use global config value
             Difference  // vanilla + difference
         }
 
-        public enum StrikesMode
+        public enum ChargeMode
         {
             Global,     // use global config value
             Custom      // use custom value
@@ -22,12 +22,12 @@ namespace ToolsMeleeRecharge
         private readonly int index;
         private readonly string internalName;
         private readonly string displayName;
-        private int strikeCounter = 0;
+        private int chargePercent = 0;
 
-        private readonly ConfigEntry<ChargeMode> chargeMode;
+        private readonly ConfigEntry<StorageMode> storageMode;
         private readonly ConfigEntry<int> chargesDifference;
 
-        private readonly ConfigEntry<StrikesMode> strikesMode;
+        private readonly ConfigEntry<ChargeMode> chargeMode;
         private readonly ConfigEntry<int> customChargePercentPerStrike;
 
         private readonly ConfigEntry<float> damageMultiplier;
@@ -39,11 +39,11 @@ namespace ToolsMeleeRecharge
             this.displayName = displayName;
 
             // Charges settings
-            chargeMode = config.Bind(
+            storageMode = config.Bind(
                 $"{index:D2} - {displayName}",
-                "ChargesMode",
-                ChargeMode.Vanilla,
-                new ConfigDescription("How to determine charges for this tool (Vanilla / Global / Difference)")
+                "StorageMode",
+                StorageMode.Vanilla,
+                new ConfigDescription("How to determine storage size for this tool (Vanilla / Global / Difference)")
             );
 
             chargesDifference = config.Bind(
@@ -57,22 +57,22 @@ namespace ToolsMeleeRecharge
             );
 
             // Strikes settings
-            strikesMode = config.Bind(
-                $"{index:D2} - {displayName}",
-                "StrikesPerRechargeMode",
-                StrikesMode.Global,
-                new ConfigDescription("How to determine strikes per recharge for this tool (Global / Custom)")
-            );
+            // strikesMode = config.Bind(
+            //     $"{index:D2} - {displayName}",
+            //     "StrikesPerRechargeMode",
+            //     StrikesMode.Custom,
+            //     new ConfigDescription("How to determine strikes per recharge for this tool (Global / Custom)")
+            // );
 
-            customChargePercentPerStrike = config.Bind(
-                $"{index:D2} - {displayName}",
-                "CustomChargePercentPerStrike",
-                5,
-                new ConfigDescription(
-                    "Charge in percents replenished with one strike (100% == 1 charge) (only used if mode = Custom)",
-                    new AcceptableValueRange<int>(1, 999)
-                )
-            );
+            // this.customChargePercentPerStrike = config.Bind(
+            //     $"{index:D2} - {displayName}",
+            //     "CustomChargePercentPerStrike",
+            //     chargePercentPerStrike,
+            //     new ConfigDescription(
+            //         "Charge in percents replenished with one strike (100% == 1 charge) (only used if mode = Custom)",
+            //         new AcceptableValueRange<int>(1, 999)
+            //     )
+            // );
 
             // Optional damage multiplier (not hooked up yet)
             // damageMultiplier = config.Bind(
@@ -92,17 +92,17 @@ namespace ToolsMeleeRecharge
         public string GetDisplayName() => displayName;
 
         /// <summary>
-        /// Resolves max charges for this tool, based on mode.
+        /// Resolves storage size for this tool, based on mode.
         /// </summary>
-        public int ResolveCharges(int vanillaValue)
+        public int ResolveStorage(int vanillaValue)
         {
-            switch (chargeMode.Value)
+            switch (storageMode.Value)
             {
-                case ChargeMode.Vanilla:
+                case StorageMode.Vanilla:
                     return vanillaValue;
-                case ChargeMode.Global:
+                case StorageMode.Global:
                     return GlobalToolConfig.GetGlobalMaxCharges();
-                case ChargeMode.Difference:
+                case StorageMode.Difference:
                     return Math.Max(1, vanillaValue + chargesDifference.Value);
                 default:
                     return vanillaValue;
@@ -112,24 +112,24 @@ namespace ToolsMeleeRecharge
         /// <summary>
         /// Resolves strikes per recharge for this tool, based on mode.
         /// </summary>
-        public int ResolveChargePercentPerStrike()
-        {
-            switch (strikesMode.Value)
-            {
-                case StrikesMode.Global:
-                    return GlobalToolConfig.GetGlobalChargePercentPerStrike();
-                case StrikesMode.Custom:
-                    return customChargePercentPerStrike.Value;
-                default:
-                    return GlobalToolConfig.GetGlobalChargePercentPerStrike();
-            }
-        }
+        // public int ResolveChargePercentPerStrike()
+        // {
+        //     switch (strikesMode.Value)
+        //     {
+        //         case StrikesMode.Global:
+        //             return GlobalToolConfig.GetGlobalChargePercentPerStrike();
+        //         case StrikesMode.Custom:
+        //             return customChargePercentPerStrike.Value;
+        //         default:
+        //             return GlobalToolConfig.GetGlobalChargePercentPerStrike();
+        //     }
+        // }
 
         public float GetDamageMultiplier() => damageMultiplier?.Value ?? 1f;
 
-        public int GetChargePercent() => strikeCounter;
-        public void IncrementStrikeCounter(int increment) => strikeCounter += increment;
-        public void ResetStrikeCounter() => strikeCounter = 0;
+        public int GetChargePercent() => chargePercent;
+        public void IncreaseChargePercentCounter(int increment) => chargePercent += increment;
+        public void ResetChargePercentCounter() => chargePercent = 0;
     }
 
 }

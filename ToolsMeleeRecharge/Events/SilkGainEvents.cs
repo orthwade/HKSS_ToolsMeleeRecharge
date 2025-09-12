@@ -78,18 +78,18 @@ namespace ToolsMeleeRecharge.Events
                     ToolItemsData.Data toolData = PlayerData.instance.GetToolData(item.name);
 
                     int currentCharges = toolData.AmountLeft;
-                    int maxCharges = toolRecharge.ResolveCharges(ToolItemManager.GetToolStorageAmount(item));
-                    int chargePercentPerStrike = toolRecharge.ResolveChargePercentPerStrike();
+                    int maxCharges = toolRecharge.ResolveStorage(ToolItemManager.GetToolStorageAmount(item));
+                    int chargePercentPerStrike = GlobalToolConfig.GetGlobalChargePercentPerStrike();
 
                     if (currentCharges >= maxCharges)
                     {
-                        toolRecharge.ResetStrikeCounter();
+                        toolRecharge.ResetChargePercentCounter();
                         continue; // already full
                     }
 
-                    toolRecharge.IncrementStrikeCounter(chargePercentPerStrike);
+                    toolRecharge.IncreaseChargePercentCounter(chargePercentPerStrike);
 
-                    int charges = toolRecharge.GetChargePercent() / 100;
+                    int charges = maxCharges * toolRecharge.GetChargePercent() / 100;
 
                     if (charges > 0)
                     {
@@ -100,7 +100,7 @@ namespace ToolsMeleeRecharge.Events
                         // schedule a single deferred update (do not call immediately)
                         ScheduleDeferredToolUpdate();
 
-                        toolRecharge.ResetStrikeCounter();
+                        toolRecharge.ResetChargePercentCounter();
                     }
                 }
             }
