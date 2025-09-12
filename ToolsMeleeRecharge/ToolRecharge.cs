@@ -28,7 +28,7 @@ namespace ToolsMeleeRecharge
         private readonly ConfigEntry<int> chargesDifference;
 
         private readonly ConfigEntry<StrikesMode> strikesMode;
-        private readonly ConfigEntry<int> customStrikesPerRecharge;
+        private readonly ConfigEntry<int> customChargePercentPerStrike;
 
         private readonly ConfigEntry<float> damageMultiplier;
 
@@ -64,12 +64,12 @@ namespace ToolsMeleeRecharge
                 new ConfigDescription("How to determine strikes per recharge for this tool (Global / Custom)")
             );
 
-            customStrikesPerRecharge = config.Bind(
+            customChargePercentPerStrike = config.Bind(
                 $"{index:D2} - {displayName}",
-                "CustomStrikesPerRecharge",
+                "CustomChargePercentPerStrike",
                 5,
                 new ConfigDescription(
-                    "Strikes required to replenish one charge (only used if mode = Custom)",
+                    "Charge in percents replenished with one strike (100% == 1 charge) (only used if mode = Custom)",
                     new AcceptableValueRange<int>(1, 999)
                 )
             );
@@ -112,23 +112,23 @@ namespace ToolsMeleeRecharge
         /// <summary>
         /// Resolves strikes per recharge for this tool, based on mode.
         /// </summary>
-        public int ResolveStrikesPerRecharge()
+        public int ResolveChargePercentPerStrike()
         {
             switch (strikesMode.Value)
             {
                 case StrikesMode.Global:
-                    return GlobalToolConfig.GetGlobalStrikesPerRecharge();
+                    return GlobalToolConfig.GetGlobalChargePercentPerStrike();
                 case StrikesMode.Custom:
-                    return customStrikesPerRecharge.Value;
+                    return customChargePercentPerStrike.Value;
                 default:
-                    return GlobalToolConfig.GetGlobalStrikesPerRecharge();
+                    return GlobalToolConfig.GetGlobalChargePercentPerStrike();
             }
         }
 
         public float GetDamageMultiplier() => damageMultiplier?.Value ?? 1f;
 
-        public int GetStrikeCounter() => strikeCounter;
-        public void IncrementStrikeCounter() => strikeCounter++;
+        public int GetChargePercent() => strikeCounter;
+        public void IncrementStrikeCounter(int increment) => strikeCounter += increment;
         public void ResetStrikeCounter() => strikeCounter = 0;
     }
 

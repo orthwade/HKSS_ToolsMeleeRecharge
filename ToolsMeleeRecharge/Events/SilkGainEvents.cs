@@ -79,7 +79,7 @@ namespace ToolsMeleeRecharge.Events
 
                     int currentCharges = toolData.AmountLeft;
                     int maxCharges = toolRecharge.ResolveCharges(ToolItemManager.GetToolStorageAmount(item));
-                    int strikesPerRecharge = toolRecharge.ResolveStrikesPerRecharge();
+                    int chargePercentPerStrike = toolRecharge.ResolveChargePercentPerStrike();
 
                     if (currentCharges >= maxCharges)
                     {
@@ -87,11 +87,13 @@ namespace ToolsMeleeRecharge.Events
                         continue; // already full
                     }
 
-                    toolRecharge.IncrementStrikeCounter();
+                    toolRecharge.IncrementStrikeCounter(chargePercentPerStrike);
 
-                    if (toolRecharge.GetStrikeCounter() >= strikesPerRecharge)
+                    int charges = toolRecharge.GetChargePercent() / 100;
+
+                    if (charges > 0)
                     {
-                        toolData.AmountLeft++;
+                        toolData.AmountLeft = Math.Min(toolData.AmountLeft + charges, maxCharges); // cap to max
                         PlayerData.instance.SetToolData(item.name, toolData);
                         Log.LogInfo($"[AfterSilkGain] Recharged 1 charge for {toolRecharge.GetDisplayName()}. New charges: {currentCharges + 1}");
 

@@ -8,7 +8,7 @@ namespace ToolsMeleeRecharge
     internal static class GlobalToolConfig
     {
         private static ConfigEntry<int> GlobalMaxCharges;
-        private static ConfigEntry<int> GlobalStrikesPerRecharge;
+        private static ConfigEntry<int> GlobalChargePercentPerStrike;
         private static ConfigEntry<float> GlobalDamageMultiplier;
 
         public static void Init(ConfigFile config)
@@ -23,12 +23,12 @@ namespace ToolsMeleeRecharge
                 )
             );
 
-            GlobalStrikesPerRecharge = config.Bind(
+            GlobalChargePercentPerStrike = config.Bind(
                 "00 - Global",
-                "StrikesPerRecharge",
-                1,
+                "ChargePercentPerStrike",
+                100,
                 new ConfigDescription(
-                    "Global strikes required to replenish one charge for all tools",
+                    "Global charge in percents replenished with one strike (100% == 1 charge)",
                     new AcceptableValueRange<int>(1, 999)
                 )
             );
@@ -46,7 +46,7 @@ namespace ToolsMeleeRecharge
         }
 
         public static int GetGlobalMaxCharges() => GlobalMaxCharges.Value;
-        public static int GetGlobalStrikesPerRecharge() => GlobalStrikesPerRecharge.Value;
+        public static int GetGlobalChargePercentPerStrike() => GlobalChargePercentPerStrike.Value;
         // public static float GetGlobalDamageMultiplier() => GlobalDamageMultiplier.Value;
     }
 }
