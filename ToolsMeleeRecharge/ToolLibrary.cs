@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using BepInEx.Configuration;
-
-static public class ToolLibrary
+namespace ToolsMeleeRecharge
 {
-    private static readonly Dictionary<string, string> DisplayToInternal = new Dictionary<string, string>
+    static public class ToolLibrary
+    {
+        private static readonly Dictionary<string, string> DisplayToInternal = new Dictionary<string, string>
     {
         { "Straight Pin", "Straight Pin" },
         { "Threefold Pin", "Tri Pin" },
@@ -28,47 +29,48 @@ static public class ToolLibrary
         { "Plasmium Phial", "Lifeblood Syringe" },
         { "Voltvessels", "Lightning Rod" },
     };
-    private static Dictionary<string, ToolRecharge> ToolsByInternalName { get; set; }
-    private static Dictionary<string, ToolRecharge> ToolsByDisplayName { get; set; }
+        private static Dictionary<string, ToolRecharge> ToolsByInternalName { get; set; }
+        private static Dictionary<string, ToolRecharge> ToolsByDisplayName { get; set; }
 
-    private static Dictionary<int, ToolRecharge> ToolsByIndex { get; set; }
+        private static Dictionary<int, ToolRecharge> ToolsByIndex { get; set; }
 
-    public static void Init(ConfigFile config)
-    {
-        ToolsByInternalName = new Dictionary<string, ToolRecharge>();
-        ToolsByDisplayName = new Dictionary<string, ToolRecharge>();
-        ToolsByIndex = new Dictionary<int, ToolRecharge>();
-
-        // Add each tool: index, internalName, displayName, config, defaultCharges, defaultStrikes, defaultDamage
-        int index = 1; // start numbering from 1
-        foreach (var kvp in DisplayToInternal)
+        public static void Init(ConfigFile config)
         {
-            AddTool(index, kvp.Value, kvp.Key, config);
-            index++;
+            ToolsByInternalName = new Dictionary<string, ToolRecharge>();
+            ToolsByDisplayName = new Dictionary<string, ToolRecharge>();
+            ToolsByIndex = new Dictionary<int, ToolRecharge>();
+
+            // Add each tool: index, internalName, displayName, config, defaultCharges, defaultStrikes, defaultDamage
+            int index = 1; // start numbering from 1
+            foreach (var kvp in DisplayToInternal)
+            {
+                AddTool(index, kvp.Value, kvp.Key, config);
+                index++;
+            }
         }
-    }
 
-    private static void AddTool(int index, string internalName, string displayName, ConfigFile config)
-    {
-        var tool = new ToolRecharge(index, internalName, displayName, config);
-        ToolsByInternalName[internalName] = tool;
-        ToolsByDisplayName[displayName] = tool;
-        ToolsByIndex[index] = tool;
-    }
+        private static void AddTool(int index, string internalName, string displayName, ConfigFile config)
+        {
+            var tool = new ToolRecharge(index, internalName, displayName, config);
+            ToolsByInternalName[internalName] = tool;
+            ToolsByDisplayName[displayName] = tool;
+            ToolsByIndex[index] = tool;
+        }
 
-    public static ToolRecharge GetByInternalName(string internalName)
-    {
-        ToolsByInternalName.TryGetValue(internalName, out var tool);
-        return tool;
-    }
-    public static ToolRecharge GetByDisplayName(string displayName)
-    {
-        ToolsByDisplayName.TryGetValue(displayName, out var tool);
-        return tool;
-    }
-    public static ToolRecharge GetByIndex(int index)
-    {
-        ToolsByIndex.TryGetValue(index, out var tool);
-        return tool;
+        public static ToolRecharge GetByInternalName(string internalName)
+        {
+            ToolsByInternalName.TryGetValue(internalName, out var tool);
+            return tool;
+        }
+        public static ToolRecharge GetByDisplayName(string displayName)
+        {
+            ToolsByDisplayName.TryGetValue(displayName, out var tool);
+            return tool;
+        }
+        public static ToolRecharge GetByIndex(int index)
+        {
+            ToolsByIndex.TryGetValue(index, out var tool);
+            return tool;
+        }
     }
 }

@@ -12,13 +12,9 @@ namespace ToolsMeleeRecharge.Patches
             var toolRecharge = ToolLibrary.GetByInternalName(tool.name);
             if (toolRecharge == null) return;
 
-            var maxCharges = toolRecharge.GetMaxCharges();
+            var maxCharges = toolRecharge.ResolveCharges(__result);
 
-            if (maxCharges < 0)
-                maxCharges = GlobalToolConfig.GetGlobalMaxCharges();
-
-            if (__result > maxCharges)
-                __result = maxCharges; // Cap charges
+            __result = maxCharges;
         }
     }
 }
