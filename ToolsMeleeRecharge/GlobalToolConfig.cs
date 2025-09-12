@@ -28,7 +28,7 @@ namespace ToolsMeleeRecharge
                 "ChargePercentPerStrike",
                 5,
                 new ConfigDescription(
-                    "Global charge in percents replenished with one strike (if storage is 10, 10% == 1 charge, 100% == 10 charges)",
+                    "Global charge in percents replenished with one strike.\nIf storage is 10:\n4% == 0.4 charge(3 strikes required for 1 charge)\n10% == 1 charge\n100% == 10 charges",
                     new AcceptableValueRange<int>(1, 20000)
                 )
             );
