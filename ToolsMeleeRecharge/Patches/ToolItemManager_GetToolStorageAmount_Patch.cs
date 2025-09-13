@@ -7,13 +7,22 @@ namespace ToolsMeleeRecharge.Patches
     {
         private static void Postfix(ToolItem tool, ref int __result)
         {
-            if (tool.Type != ToolItemType.Red) return;
+            if (tool == null)
+                return;
+            if (tool.Type != ToolItemType.Red)
+                return;
 
             var toolRecharge = ToolLibrary.GetByInternalName(tool.name);
-            if (toolRecharge == null) return;
 
+            if (toolRecharge == null)
+            {
+                // 🚫 Not one of your supported tools → leave vanilla result untouched
+                UnityEngine.Debug.Log($"[RechargePatch] Skipping unsupported red tool {tool.name} (vanilla storage={__result})");
+                return;
+            }
+
+            // ✅ Only override if you recognize the tool
             var maxCharges = toolRecharge.ResolveStorage(__result, true);
-
             __result = maxCharges;
         }
     }
