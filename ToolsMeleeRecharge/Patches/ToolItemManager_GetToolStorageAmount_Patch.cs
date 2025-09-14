@@ -19,7 +19,7 @@ namespace ToolsMeleeRecharge.Patches
             // Defensive: make sure tool has a name
             if (string.IsNullOrEmpty(tool.name))
             {
-                Debug.LogWarning("[RechargePatch] Skipping unnamed red tool (tool.name was null/empty).");
+                Logger.LogWarning("[RechargePatch] Skipping unnamed red tool (tool.name was null/empty).");
                 return;
             }
 
@@ -28,7 +28,7 @@ namespace ToolsMeleeRecharge.Patches
             if (toolRecharge == null)
             {
                 // Unsupported tool → leave vanilla result intact
-                Debug.Log($"[RechargePatch] Skipping unsupported red tool \"{tool.name}\" (vanilla storage={__result}).");
+                Logger.LogInfo($"[RechargePatch] Skipping unsupported red tool \"{tool.name}\" (vanilla storage={__result}).");
                 return;
             }
 
@@ -36,12 +36,12 @@ namespace ToolsMeleeRecharge.Patches
             try
             {
                 var maxCharges = toolRecharge.ResolveStorage(__result, true);
-                Debug.Log($"[RechargePatch] Overriding {tool.name}: vanilla={__result}, patched={maxCharges}");
+                Logger.LogInfo($"[RechargePatch] Overriding {tool.name}: vanilla={__result}, patched={maxCharges}");
                 __result = maxCharges;
             }
             catch (System.Exception ex)
             {
-                Debug.LogError($"[RechargePatch] ResolveStorage failed for {tool.name}: {ex}");
+                Logger.LogError($"[RechargePatch] ResolveStorage failed for {tool.name}: {ex}");
                 // Fallback: leave __result unchanged
             }
         }
