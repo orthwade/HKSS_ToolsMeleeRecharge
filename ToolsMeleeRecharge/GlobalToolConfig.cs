@@ -7,27 +7,6 @@ namespace ToolsMeleeRecharge
 {
     internal static class GlobalToolConfig
     {
-        private static ConfigEntry<bool> LoggingEnabled;
-        private static void LoggingInit(ConfigFile config)
-        {
-            LoggingEnabled = config.Bind(
-                "00 - General",              // Section
-                "Logging",       // Key
-                false,                   // Default value
-                 new ConfigDescription(
-                    "Enable or disable logging to BepInEx log file",
-                    null,
-                    new ConfigurationManagerAttributes { Order = 1 }
-                )
-            );
-
-            Logger.enableLogging = LoggingEnabled.Value;
-
-            LoggingEnabled.SettingChanged += (sender, args) =>
-            {
-                Logger.enableLogging = LoggingEnabled.Value;
-            };
-        }
         private static ConfigEntry<int> GlobalMaxCharges;
         private static ConfigEntry<int> GlobalChargePercentPerStrike;
         private static ConfigEntry<float> GlobalDamageMultiplier;
@@ -36,8 +15,6 @@ namespace ToolsMeleeRecharge
 
         public static void Init(ConfigFile config)
         {
-            LoggingInit(config);
-
             GlobalMaxCharges = config.Bind(
                 "00 - Global",
                 "MaxCharges",

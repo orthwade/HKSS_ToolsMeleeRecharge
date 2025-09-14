@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ToolsMeleeRecharge
 {
-    [BepInPlugin("com.orthwade.toolsmeleerecharge", "Tools Melee Recharge", "1.0.0")]
+    [BepInPlugin("com.orthwade.toolsmeleerecharge", "Tools Melee Recharge", "1.0.5")]
     public class ToolsMeleeRecharge : BaseUnityPlugin
     {
         internal static ToolsMeleeRecharge Instance;
@@ -13,14 +13,14 @@ namespace ToolsMeleeRecharge
         {
             Instance = this;
 
-            global::ToolsMeleeRecharge.Logger.Init();
+            PluginLogger.Init(Config);
 
             ToolLibrary.Init(Config);
 
             // Initialize config manager
             GlobalToolConfig.Init(Config);
 
-            global::ToolsMeleeRecharge.Logger.LogInfo("Tools Melee Recharge loaded!");
+            PluginLogger.LogInfo("Tools Melee Recharge loaded!");
 
             // Apply Harmony patches
             var harmony = new Harmony("com.orthwade.toolsmeleerecharge");

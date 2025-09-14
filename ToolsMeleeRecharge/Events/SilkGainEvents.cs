@@ -17,7 +17,7 @@ namespace ToolsMeleeRecharge.Events
         {
             if (PlayerData.instance == null)
             {
-                Logger.LogError("[GetCurrentEquippedTools] PlayerData.instance is null!");
+                PluginLogger.LogError("[GetCurrentEquippedTools] PlayerData.instance is null!");
                 return new List<ToolItem>();
             }
 
@@ -34,18 +34,18 @@ namespace ToolsMeleeRecharge.Events
         {
             try
             {
-                Logger.LogInfo($"[AfterSilkGain] AttackType={hit.AttackType}, Damage={hit.DamageDealt}");
+                PluginLogger.LogInfo($"[AfterSilkGain] AttackType={hit.AttackType}, Damage={hit.DamageDealt}");
 
                 if (PlayerData.instance == null)
                 {
-                    Logger.LogError("[AfterSilkGain] PlayerData.instance is null. Aborting.");
+                    PluginLogger.LogError("[AfterSilkGain] PlayerData.instance is null. Aborting.");
                     return;
                 }
 
                 var equippedTools = GetCurrentEquippedTools();
                 if (equippedTools == null)
                 {
-                    Logger.LogError("[AfterSilkGain] equippedTools == null (unexpected).");
+                    PluginLogger.LogError("[AfterSilkGain] equippedTools == null (unexpected).");
                     return;
                 }
 
@@ -53,7 +53,7 @@ namespace ToolsMeleeRecharge.Events
                 {
                     if (item == null)
                     {
-                        Logger.LogWarning("[AfterSilkGain] skipped null ToolItem in equippedTools.");
+                        PluginLogger.LogWarning("[AfterSilkGain] skipped null ToolItem in equippedTools.");
                         continue;
                     }
 
@@ -62,13 +62,13 @@ namespace ToolsMeleeRecharge.Events
                     var toolRecharge = ToolLibrary.GetByInternalName(item.name);
                     if (toolRecharge == null)
                     {
-                        Logger.LogWarning($"[AfterSilkGain] ToolLibrary.GetByInternalName returned null for '{item.name}'.");
+                        PluginLogger.LogWarning($"[AfterSilkGain] ToolLibrary.GetByInternalName returned null for '{item.name}'.");
                         continue;
                     }
 
                     if (PlayerData.instance == null)
                     {
-                        Logger.LogError("[AfterSilkGain] PlayerData.instance became null mid-loop. Aborting.");
+                        PluginLogger.LogError("[AfterSilkGain] PlayerData.instance became null mid-loop. Aborting.");
                         return;
                     }
 
@@ -93,7 +93,7 @@ namespace ToolsMeleeRecharge.Events
                     {
                         toolData.AmountLeft = Math.Min(toolData.AmountLeft + charges, maxCharges); // cap to max
                         PlayerData.instance.SetToolData(item.name, toolData);
-                        Logger.LogInfo($"[AfterSilkGain] Recharged 1 charge for {toolRecharge.GetDisplayName()}. New charges: {currentCharges + 1}");
+                        PluginLogger.LogInfo($"[AfterSilkGain] Recharged 1 charge for {toolRecharge.GetDisplayName()}. New charges: {currentCharges + 1}");
 
                         // schedule a single deferred update (do not call immediately)
                         ScheduleDeferredToolUpdate();
@@ -104,7 +104,7 @@ namespace ToolsMeleeRecharge.Events
             }
             catch (Exception ex)
             {
-                Logger.LogError($"[AfterSilkGain] Exception: {ex}");
+                PluginLogger.LogError($"[AfterSilkGain] Exception: {ex}");
             }
         }
 
@@ -120,7 +120,7 @@ namespace ToolsMeleeRecharge.Events
             }
             catch (Exception ex)
             {
-                Logger.LogError($"[ScheduleDeferredToolUpdate] Failed to start coroutine: {ex}");
+                PluginLogger.LogError($"[ScheduleDeferredToolUpdate] Failed to start coroutine: {ex}");
                 updateScheduled = false;
             }
         }
@@ -139,7 +139,7 @@ namespace ToolsMeleeRecharge.Events
             }
             catch (Exception ex)
             {
-                Logger.LogError($"[DeferredUpdate] ReportAllBoundAttackToolsUpdated threw: {ex}");
+                PluginLogger.LogError($"[DeferredUpdate] ReportAllBoundAttackToolsUpdated threw: {ex}");
             }
             finally
             {
