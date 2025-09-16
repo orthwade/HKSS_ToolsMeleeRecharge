@@ -12,17 +12,17 @@ namespace ToolsMeleeRecharge.Events
     {
         // Ensure we only schedule one deferred update per frame
         private static bool updateScheduled = false;
-
+      
         private static List<ToolItem> GetCurrentEquippedTools()
         {
             if (PlayerData.instance == null)
             {
-                PluginLogger.LogError("[GetCurrentEquippedTools] PlayerData.instance is null!");
+                owd.BepinexPluginLogger.LogError("[GetCurrentEquippedTools] PlayerData.instance is null!");
                 return new List<ToolItem>();
             }
 
             var crestId = PlayerData.instance.CurrentCrestID ?? string.Empty;
-            var list = ToolItemManager.GetEquippedToolsForCrest(crestId) 
+            var list = ToolItemManager.GetEquippedToolsForCrest(crestId)
                     ?? new List<ToolItem>();
 
             // Remove any null entries up front
@@ -34,18 +34,18 @@ namespace ToolsMeleeRecharge.Events
         {
             try
             {
-                PluginLogger.LogInfo($"[AfterSilkGain] AttackType={hit.AttackType}, Damage={hit.DamageDealt}");
+                owd.BepinexPluginLogger.LogInfo($"[AfterSilkGain] AttackType={hit.AttackType}, Damage={hit.DamageDealt}");
 
                 if (PlayerData.instance == null)
                 {
-                    PluginLogger.LogError("[AfterSilkGain] PlayerData.instance is null. Aborting.");
+                    owd.BepinexPluginLogger.LogError("[AfterSilkGain] PlayerData.instance is null. Aborting.");
                     return;
                 }
 
                 var equippedTools = GetCurrentEquippedTools();
                 if (equippedTools == null)
                 {
-                    PluginLogger.LogError("[AfterSilkGain] equippedTools == null (unexpected).");
+                    owd.BepinexPluginLogger.LogError("[AfterSilkGain] equippedTools == null (unexpected).");
                     return;
                 }
 
@@ -53,7 +53,7 @@ namespace ToolsMeleeRecharge.Events
                 {
                     if (item == null)
                     {
-                        PluginLogger.LogWarning("[AfterSilkGain] skipped null ToolItem in equippedTools.");
+                        owd.BepinexPluginLogger.LogWarning("[AfterSilkGain] skipped null ToolItem in equippedTools.");
                         continue;
                     }
 
@@ -62,13 +62,13 @@ namespace ToolsMeleeRecharge.Events
                     var toolRecharge = ToolLibrary.GetByInternalName(item.name);
                     if (toolRecharge == null)
                     {
-                        PluginLogger.LogWarning($"[AfterSilkGain] ToolLibrary.GetByInternalName returned null for '{item.name}'.");
+                        owd.BepinexPluginLogger.LogWarning($"[AfterSilkGain] ToolLibrary.GetByInternalName returned null for '{item.name}'.");
                         continue;
                     }
 
                     if (PlayerData.instance == null)
                     {
-                        PluginLogger.LogError("[AfterSilkGain] PlayerData.instance became null mid-loop. Aborting.");
+                        owd.BepinexPluginLogger.LogError("[AfterSilkGain] PlayerData.instance became null mid-loop. Aborting.");
                         return;
                     }
 
@@ -93,7 +93,7 @@ namespace ToolsMeleeRecharge.Events
                     {
                         toolData.AmountLeft = Math.Min(toolData.AmountLeft + charges, maxCharges); // cap to max
                         PlayerData.instance.SetToolData(item.name, toolData);
-                        PluginLogger.LogInfo($"[AfterSilkGain] Recharged 1 charge for {toolRecharge.GetDisplayName()}. New charges: {currentCharges + 1}");
+                        owd.BepinexPluginLogger.LogInfo($"[AfterSilkGain] Recharged 1 charge for {toolRecharge.GetDisplayName()}. New charges: {currentCharges + 1}");
 
                         // schedule a single deferred update (do not call immediately)
                         ScheduleDeferredToolUpdate();
@@ -104,7 +104,7 @@ namespace ToolsMeleeRecharge.Events
             }
             catch (Exception ex)
             {
-                PluginLogger.LogError($"[AfterSilkGain] Exception: {ex}");
+                owd.BepinexPluginLogger.LogError($"[AfterSilkGain] Exception: {ex}");
             }
         }
 
@@ -120,7 +120,7 @@ namespace ToolsMeleeRecharge.Events
             }
             catch (Exception ex)
             {
-                PluginLogger.LogError($"[ScheduleDeferredToolUpdate] Failed to start coroutine: {ex}");
+                owd.BepinexPluginLogger.LogError($"[ScheduleDeferredToolUpdate] Failed to start coroutine: {ex}");
                 updateScheduled = false;
             }
         }
@@ -139,7 +139,7 @@ namespace ToolsMeleeRecharge.Events
             }
             catch (Exception ex)
             {
-                PluginLogger.LogError($"[DeferredUpdate] ReportAllBoundAttackToolsUpdated threw: {ex}");
+                owd.BepinexPluginLogger.LogError($"[DeferredUpdate] ReportAllBoundAttackToolsUpdated threw: {ex}");
             }
             finally
             {

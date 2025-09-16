@@ -1,26 +1,28 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using UnityEngine;
+using owd;
+using ToolsMeleeRecharge.Events;
 
 namespace ToolsMeleeRecharge
 {
-    [BepInPlugin("com.orthwade.toolsmeleerecharge", "Tools Melee Recharge", "1.0.5")]
+    [BepInPlugin("com.orthwade.toolsmeleerecharge", "Tools Melee Recharge", "1.0.6")]
     public class ToolsMeleeRecharge : BaseUnityPlugin
     {
+        private static ManualLogSource logger;
         internal static ToolsMeleeRecharge Instance;
         private void Awake()
         {
             Instance = this;
 
-            PluginLogger.Init(Config);
+            BepinexPluginLogger.Init(Config, "ToolsMeleeRecharge");
+
+            logger = BepinexPluginLogger.GetLogger();
+            GlobalToolConfig.Init(Config);
 
             ToolLibrary.Init(Config);
 
-            // Initialize config manager
-            GlobalToolConfig.Init(Config);
-
-            PluginLogger.LogInfo("Tools Melee Recharge loaded!");
+            logger.LogInfo("Tools Melee Recharge loaded!");
 
             // Apply Harmony patches
             var harmony = new Harmony("com.orthwade.toolsmeleerecharge");

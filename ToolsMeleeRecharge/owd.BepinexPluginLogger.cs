@@ -1,27 +1,32 @@
 using BepInEx.Logging;
-using UnityEngine;
-using BepInEx;
 using BepInEx.Configuration;
+using System;
 
-namespace ToolsMeleeRecharge
+namespace owd
 {
-    /// <summary>
-    /// Centralized logger for the Tools Melee Recharge plugin.
-    /// </summary>
-    public static class PluginLogger
+    public static class BepinexPluginLogger
     {
-        // Logging is enabled by default
-        public static bool enableLogging = true;
-        private static ManualLogSource logger;
+        private static bool enableLogging = true;
+        private static ManualLogSource? logger = null;
 
-        public static void Init(ConfigFile config)
+        public static ManualLogSource GetLogger()
         {
             if (logger == null)
             {
-                logger = BepInEx.Logging.Logger.CreateLogSource("ToolsMeleeRecharge");
-                LoggingInit(config);
+                throw new Exception("Logger not initialized. Call Init() first.");
             }
 
+            return logger;
+        }
+
+
+        public static void Init(ConfigFile config, string pluginName)
+        {
+            if (logger == null)
+            {
+                logger = BepInEx.Logging.Logger.CreateLogSource(pluginName);
+                LoggingInit(config);
+            }
         }
 
         public static void LogInfo(string message)
@@ -46,10 +51,10 @@ namespace ToolsMeleeRecharge
         private static void LoggingInit(ConfigFile config)
         {
             LoggingEnabled = config.Bind(
-                "00 - General",              // Section
-                "Logging",       // Key
-                false,                   // Default value
-                 new ConfigDescription(
+                "00 - General",
+                "Logging",
+                false,
+                new ConfigDescription(
                     "Enable or disable logging to BepInEx log file",
                     null,
                     new ConfigurationManagerAttributes { Order = 1 }

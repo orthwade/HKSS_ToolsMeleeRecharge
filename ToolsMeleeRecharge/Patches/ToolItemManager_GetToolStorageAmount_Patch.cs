@@ -1,11 +1,13 @@
 using HarmonyLib;
-using UnityEngine;
+using BepInEx.Logging;
 
 namespace ToolsMeleeRecharge.Patches
 {
     [HarmonyPatch(typeof(ToolItemManager), nameof(ToolItemManager.GetToolStorageAmount))]
     internal static class ToolItemManager_GetToolStorageAmount_Patch
     {
+        private static ManualLogSource ?logger = null;
+        
         private static void Postfix(ToolItem tool, ref int __result)
         {
             // 🚫 Defensive guard: ignore null tools
@@ -19,7 +21,7 @@ namespace ToolsMeleeRecharge.Patches
             // Defensive: make sure tool has a name
             if (string.IsNullOrEmpty(tool.name))
             {
-                PluginLogger.LogWarning("[RechargePatch] Skipping unnamed red tool (tool.name was null/empty).");
+                owd.BepinexPluginLogger.LogWarning("[ToolItemManager_GetToolStorageAmount_Patch] Skipping unnamed red tool (tool.name was null/empty).");
                 return;
             }
 
@@ -28,7 +30,7 @@ namespace ToolsMeleeRecharge.Patches
             if (toolRecharge == null)
             {
                 // Unsupported tool → leave vanilla result intact
-                PluginLogger.LogInfo($"[RechargePatch] Skipping unsupported red tool \"{tool.name}\" (vanilla storage={__result}).");
+                owd.BepinexPluginLogger.LogInfo($"[ToolItemManager_GetToolStorageAmount_Patch] Skipping unsupported red tool \"{tool.name}\" (vanilla storage={__result}).");
                 return;
             }
 
@@ -36,12 +38,12 @@ namespace ToolsMeleeRecharge.Patches
             try
             {
                 var maxCharges = toolRecharge.ResolveStorage(__result, true);
-                PluginLogger.LogInfo($"[RechargePatch] Overriding {tool.name}: vanilla={__result}, patched={maxCharges}");
+                owd.BepinexPluginLogger.LogInfo($"[ToolItemManager_GetToolStorageAmount_Patch] Overriding {tool.name}: vanilla={__result}, patched={maxCharges}");
                 __result = maxCharges;
             }
             catch (System.Exception ex)
             {
-                PluginLogger.LogError($"[RechargePatch] ResolveStorage failed for {tool.name}: {ex}");
+                owd.BepinexPluginLogger.LogError($"[ToolItemManager_GetToolStorageAmount_Patch] ResolveStorage failed for {tool.name}: {ex}");
                 // Fallback: leave __result unchanged
             }
         }
