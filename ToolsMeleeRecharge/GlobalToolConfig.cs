@@ -12,9 +12,15 @@ namespace ToolsMeleeRecharge
         private static ConfigEntry<float> GlobalDamageMultiplier;
 
         private static ConfigEntry<int> StorageModifierPercent;
+        public enum BenchRestoreMode
+        {
+            Enabled,
+            OnlyLiquid,
+            Disabled
+        }
 
+        private static ConfigEntry<BenchRestoreMode> BenchRestore;
 
-        private static ConfigEntry<bool> BenchRestore;
 
         public static void Init(ConfigFile config)
         {
@@ -51,9 +57,12 @@ namespace ToolsMeleeRecharge
             BenchRestore = config.Bind(
                 "00 - Global",
                 "BenchRestore",
-                true,
+                BenchRestoreMode.Enabled, // default value
                 new ConfigDescription(
-                    "If false, benches will not restore tool charges.",
+                    "Bench restore behavior:\n" +
+                    "Enabled - Benches restore all tool charges.\n" +
+                    "OnlyLiquid - Benches restore only liquid tools.\n" +
+                    "Disabled - Benches do not restore any tool charges.",
                     null
                 )
             );
@@ -75,7 +84,7 @@ namespace ToolsMeleeRecharge
 
         public static int GetStorageModifierPercent() => StorageModifierPercent.Value;
 
-        public static bool GetBenchRestore() => BenchRestore.Value;
+        public static BenchRestoreMode GetBenchRestore() => BenchRestore.Value;
 
         // public static float GetGlobalDamageMultiplier() => GlobalDamageMultiplier.Value;
     }
