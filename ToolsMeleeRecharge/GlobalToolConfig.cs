@@ -13,6 +13,9 @@ namespace ToolsMeleeRecharge
 
         private static ConfigEntry<int> StorageModifierPercent;
 
+
+        private static ConfigEntry<bool> BenchRestore;
+
         public static void Init(ConfigFile config)
         {
             GlobalMaxCharges = config.Bind(
@@ -45,6 +48,16 @@ namespace ToolsMeleeRecharge
                 )
             );
 
+            BenchRestore = config.Bind(
+                "00 - Global",
+                "BenchRestore",
+                true,
+                new ConfigDescription(
+                    "If false, benches will not restore tool charges.",
+                    null
+                )
+            );
+
             // GlobalDamageMultiplier = config.Bind(
             //     "00 - Global",
             //     "DamageMultiplier",
@@ -61,6 +74,8 @@ namespace ToolsMeleeRecharge
         public static int GetGlobalChargePercentPerStrike() => GlobalChargePercentPerStrike.Value;
 
         public static int GetStorageModifierPercent() => StorageModifierPercent.Value;
+
+        public static bool GetBenchRestore() => BenchRestore.Value;
 
         // public static float GetGlobalDamageMultiplier() => GlobalDamageMultiplier.Value;
     }

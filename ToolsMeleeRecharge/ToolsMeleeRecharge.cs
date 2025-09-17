@@ -4,7 +4,7 @@ using owd;
 
 namespace ToolsMeleeRecharge
 {
-    [BepInPlugin("com.orthwade.toolsmeleerecharge", "Tools Melee Recharge", "1.0.6")]
+    [BepInPlugin("com.orthwade.ToolsMeleeRecharge", "Tools Melee Recharge", "1.0.7")]
     public class ToolsMeleeRecharge : BaseUnityPlugin
     {
         internal static ToolsMeleeRecharge Instance;

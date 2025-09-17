@@ -6,8 +6,6 @@ namespace ToolsMeleeRecharge.Patches
     [HarmonyPatch(typeof(ToolItemManager), nameof(ToolItemManager.GetToolStorageAmount))]
     internal static class ToolItemManager_GetToolStorageAmount_Patch
     {
-        private static ManualLogSource ?logger = null;
-        
         private static void Postfix(ToolItem tool, ref int __result)
         {
             // 🚫 Defensive guard: ignore null tools

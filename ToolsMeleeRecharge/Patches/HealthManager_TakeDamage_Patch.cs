@@ -14,7 +14,8 @@ namespace ToolsMeleeRecharge.Patches
                 .GetValue(__instance);
 
             bool zeroDamage = hitInstance.DamageDealt <= 0 &&
-                              hitInstance.HitEffectsType != EnemyHitEffectsProfile.EffectsTypes.LagHit;
+                              hitInstance.HitEffectsType !=
+                              EnemyHitEffectsProfile.EffectsTypes.LagHit;
 
             if (hitInstance.AttackType == AttackTypes.Nail &&
                 enemyType != HealthManager.EnemyTypes.Shade &&
